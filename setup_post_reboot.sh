@@ -1,61 +1,59 @@
-#!/bin/bash
+#!/usr/bin/dash
 
-sudo pacman -Syu
+set -euxo pipefail
 
-sudo pacman -S xdg-user-dirs
+sudo xbps-install -Su
+
+sudo xbps-install -S xdg-user-dirs
 xdg-user-dirs-update
 
-cd $HOME && mkdir aur
-cd aur
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
+sudo xbps-install -S spice-vdagent mesa
 
-sudo pacman -S spice-vdagent xf86-video-qxl
+sudo xbps-install -S pavucontrol
+sudo xbps-install -S alsa-utils alsa-plugins
+sudo xbps-install -S pipewire wireplumber
 
-sudo pacman -S pavucontrol
-sudo pacman -S alsa-utils alsa-plugins
-sudo pacman -S pipewire wireplumber
+sudo xbps-install -S chrony
+sudo ln -s /etc/sv/chronyd /var/service/
 
-sudo pacman -S ntp
-sudo systemctl enable ntpd
-timedatectl set-ntp true
+sudo xbps-install -S hyprland hyprpaper hyprlock hypridle
+sudo xbps-install -S wlogout
 
-sudo pacman -S hyprland hyprpaper hyprlock hypridle
-yay -S wlogout
+curl -O -L github.com/ful1e5/Bibata_Cursor/releases/download/latest/Bibata.tar.xz
+tar -xvf Bibata.tar.gz
+mv Bibata-* ~/.local/share/icons/
+sudo mv Bibata-* /usr/share/icons/
 
-yay -S bibata-cursor-theme-bin
+sudo xbps-install -S sway swaybg swayidle
 
-sudo pacman -S sway swaybg swayidle
+sudo xbps-install -S foot wmenu grim
 
-sudo pacman -S foot wmenu grim
+sudo xbps-install -S noto-fonts-cjk ttf-opensans
+sudo xbps-install -S noto-fonts-emoji
 
-sudo pacman -S noto-fonts ttf-opensans ttf-jetbrains-mono-nerd
-sudo pacman -S noto-fonts-emoji
+sudo xbps-install -S zsh
 
-sudo pacman -S zsh
+sudo xbps-install -S alacritty kitty ghostty
 
-sudo pacman -S alacritty kitty
+sudo xbps-install -S wofi
 
-sudo pacman -S wofi
+sudo xbps-install -S waybar
 
-sudo pacman -S waybar
+sudo xbps-install -S brightnessctl
 
-sudo pacman -S brightnessctl
+sudo xbps-install -S yazi nemo
 
-sudo pacman -S yazi nemo
+sudo xbps-install -S firefox
 
-sudo pacman -S firefox
+sudo xbps-install -S hyprshot
 
-yay -S hyprshot
-
-sudo pacman -S gnome-themes-extra
+sudo xbps-install -S gnome-themes-extra
 
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
-sudo pacman -S rust
+sudo xbps-install -S rust
 
-sudo pacman -S bottom curl fastfetch fzf gzip htop lazygit starship tar tmux unzip wget
-sudo pacman -S tree-sitter tree-sitter-cli
-sudo pacman -S bat eza fd ripgrep tldr
+sudo xbps-install -S bottom curl fastfetch fzf gzip htop lazygit starship tar tmux unzip wget
+sudo xbps-install -S tree-sitter tree-sitter-cli
+sudo xbps-install -S bat eza fd ripgrep tldr

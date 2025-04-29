@@ -1,15 +1,28 @@
-#!/bin/bash
+#!/usr/bin/dash
+
+set -euxo pipefail
+
+xbps-install -S terminus-font
+
+setfont ter-132n
 
 fdisk /dev/vda
 
+mkfs.fat -F32 -n EFI /dev/vda1
 mkfs.ext4 /dev/vda2
-mkfs.fat -F 32 /dev/vda1
 
 mount /dev/vda2 /mnt
-mount --mkdir /dev/vda1 /mnt/boot
+mkdir -p /mnt/boot/efi
+mount /dev/vda1 /mnt/boot/efi
 
-pacstrap -K /mnt base base-devel linux linux-firmware e2fsprogs networkmanager sof-firmware git neovim man-db man-pages texinfo archlinuxarm-keyring
+REPO=https://repo-de.voidlinux.org/current/aarch64
+ARCH=aarch64
 
-genfstab -U /mnt >> /mnt/etc/fstab
+mkdir -p /mnt/var/db/xbps/keys
+cp /var/db/xbps/keys/* /mnt/var/db/xbps/keys/
 
-echo "Now chroot into your new system via `arch-chroot /mnt` and execute `setup_pre_reboot.sh`!"
+XBPS_ARCH=$ARCH xbps-install -S -r /mnt -R "$REPO" base-system base-devel linux-mainline linux-firmware neovim git
+
+xgenfstab -U /mnt >/mnt/etc/fstab
+
+echo 'Now chroot into your new system via "xchroot /mnt /bin/bash" and execute setup_pre_reboot.sh!'

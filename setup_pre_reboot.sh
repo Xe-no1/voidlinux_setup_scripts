@@ -1,43 +1,48 @@
-#!/bin/bash
+#!/usr/bin/dash
 
-sed -i '/Color/s/^#//g' /etc/pacman.conf
+set -euxo pipefail
 
-pacman-key --init
-pacman-key --populate
-archlinux-keyring-wkd-sync
+echo "FONT=ter-132n" >>/etc/rc.conf
 
 ln -sf /usr/share/zoneinfo/Asia/Qatar /etc/localtime
-hwclock --systohc
 
-sed -i '/en_US.UTF-8 UTF-8/s/^#//g' /etc/locale.gen
-locale-gen
+sed -i '/en_US.UTF-8 UTF-8/s/^#//g' /etc/defaults/libc-locales
+xbps-reconfigure -f glibc-locales
 
-echo "LANG=en_US.UTF-8" >> /etc/locale.conf
+echo "LANG=en_US.UTF-8" >>/etc/locale.conf
 
-echo "FONT=ter-132n" >> /etc/vconsole.conf
+echo "voidlinux" >/etc/hostname
 
-echo "archlinux" >> /etc/hostname
-
-echo "127.0.0.1 localhost" >> /etc/hosts
-echo "::1 localhost" >> /etc/hosts
-echo "127.0.1.1 archlinux" >> /etc/hosts
-
-pacman -S grub efibootmgr sudo terminus-font
-
-grub-install --efi-directory=/boot --bootloader-id=GRUB
-
-grub-mkconfig -o /boot/grub/grub.cfg
+cat <<EOF >/etc/hosts
+#
+# /etc/hosts: static lookup table for host names
+#
+127.0.0.1        localhost
+::1              localhost
+127.0.1.1        myhostname.localdomain myhostname
+EOF
 
 passwd
 
-useradd -m -g users -G wheel,storage,power,video,audio,input mazentech
+useradd mazentech
 passwd mazentech
+usermod -aG wheel,storage,power,video,audio,input mazentech
 
-export EDITOR=nvim 
-visudo
+chsh -s /bin/bash root
+EDITOR=nvim visudo
 
-systemctl enable NetworkManager
+xbps-install -S
+xbps-install void-repo-nonfree
+echo repository=https://raw.githubusercontent.com/Makrennel/hyprland-void/repository-aarch64-glibc | sudo tee /etc/xbps.d/hyprland-void.conf
+xbps-install -S
 
-mkinitcpio -P
+xbps-install -S grub-arm64-efi
 
-echo "Now please exit by `exit` and unmount all drives by `umount -R /mnt`!"
+grub-install --target=arm64-efi --efi-directory=/boot/efi --bootloader-id="Void"
+
+xbps-install NetworkManager terminus-font fastfetch curl tar
+ln -s /etc/sv/NetworkManager /etc/runit/runsvdir/default/
+
+xbps-reconfigure -fa
+
+echo 'Now please exit by "exit" and unmount all drives by "umount -R /mnt"!'
