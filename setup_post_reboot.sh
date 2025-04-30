@@ -7,7 +7,7 @@ sudo xbps-install -Su
 sudo xbps-install -S xdg-user-dirs
 xdg-user-dirs-update
 
-sudo xbps-install -S spice-vdagent mesa
+sudo xbps-install -S spice-vdagent xf86-video-qxl mesa
 
 sudo xbps-install -S pavucontrol
 sudo xbps-install -S alsa-utils alsa-plugins
@@ -18,14 +18,14 @@ sudo xbps-install -S wlogout
 
 sudo xbps-install -S sway swaybg swayidle
 
-sudo xbps-install -S foot wmenu grim
+sudo xbps-install -S wmenu grim
 
 sudo xbps-install -S noto-fonts-cjk ttf-opensans
 sudo xbps-install -S noto-fonts-emoji
 
 sudo xbps-install -S zsh
 
-sudo xbps-install -S alacritty kitty ghostty
+sudo xbps-install -S alacritty kitty
 
 sudo xbps-install -S wofi
 
@@ -42,9 +42,7 @@ sudo xbps-install -S gnome-themes-extra
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
-sudo xbps-install -S cargo
-
-sudo xbps-install -S bottom curl fastfetch fzf gzip htop lazygit starship tar tmux unzip wget
+sudo xbps-install -S bottom curl fastfetch fzf gzip btop lazygit starship tar tmux unzip wget
 sudo xbps-install -S tree-sitter
 sudo xbps-install -S bat eza fd ripgrep tldr
 
