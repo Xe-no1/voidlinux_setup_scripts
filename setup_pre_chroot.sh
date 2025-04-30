@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/bash
 
 set -euxo pipefail
 
@@ -23,6 +23,6 @@ cp /var/db/xbps/keys/* /mnt/var/db/xbps/keys/
 
 XBPS_ARCH=$ARCH xbps-install -S -r /mnt -R "$REPO" base-system base-devel linux-mainline linux-firmware neovim git
 
-xgenfstab -U /mnt >/mnt/etc/fstab
+xgenfstab -U /mnt > /mnt/etc/fstab
 
 echo 'Now chroot into your new system via "xchroot /mnt /bin/bash" and execute setup_pre_reboot.sh!'

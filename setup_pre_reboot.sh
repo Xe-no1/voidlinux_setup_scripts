@@ -1,19 +1,19 @@
-#!/usr/bin/dash
+#!/usr/bin/bash
 
 set -euxo pipefail
 
-echo "FONT=ter-132n" >>/etc/rc.conf
+echo "FONT=ter-132n" >> /etc/rc.conf
 
 ln -sf /usr/share/zoneinfo/Asia/Qatar /etc/localtime
 
 sed -i '/en_US.UTF-8 UTF-8/s/^#//g' /etc/defaults/libc-locales
 xbps-reconfigure -f glibc-locales
 
-echo "LANG=en_US.UTF-8" >>/etc/locale.conf
+echo "LANG=en_US.UTF-8" >> /etc/locale.conf
 
-echo "voidlinux" >/etc/hostname
+echo "voidlinux" > /etc/hostname
 
-cat <<EOF >/etc/hosts
+cat <<EOF > /etc/hosts
 #
 # /etc/hosts: static lookup table for host names
 #

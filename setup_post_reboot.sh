@@ -1,4 +1,4 @@
-#!/usr/bin/dash
+#!/usr/bin/bash
 
 set -euxo pipefail
 
