@@ -2,11 +2,11 @@
 
 set -euxo pipefail
 
-echo "FONT=ter-132n" >> /etc/rc.conf
+nvim /etc/rc.conf
 
 ln -sf /usr/share/zoneinfo/Asia/Qatar /etc/localtime
 
-sed -i '/en_US.UTF-8 UTF-8/s/^#//g' /etc/defaults/libc-locales
+nvim /etc/default/libc-locales
 xbps-reconfigure -f glibc-locales
 
 echo "LANG=en_US.UTF-8" >> /etc/locale.conf
