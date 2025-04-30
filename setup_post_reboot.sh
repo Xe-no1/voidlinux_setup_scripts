@@ -57,3 +57,7 @@ sudo xbps-install -S rust
 sudo xbps-install -S bottom curl fastfetch fzf gzip htop lazygit starship tar tmux unzip wget
 sudo xbps-install -S tree-sitter tree-sitter-cli
 sudo xbps-install -S bat eza fd ripgrep tldr
+
+sudo xbps-reconfigure -fa
+
+echo 'Now reboot the system with "sudo shutdown -h now" to apply the changes'
