@@ -40,8 +40,10 @@ xbps-install -S grub-arm64-efi
 
 grub-install --target=arm64-efi --efi-directory=/boot/efi --bootloader-id="Void"
 
-xbps-install NetworkManager terminus-font fastfetch curl tar
+xbps-install NetworkManager openssh terminus-font fastfetch curl tar
+ln -s /etc/sv/dbus /etc/runit/runsvdir/default/
 ln -s /etc/sv/NetworkManager /etc/runit/runsvdir/default/
+ln -s /etc/sv/sshd /etc/runit/runsvdir/default/
 
 xbps-reconfigure -fa
 
