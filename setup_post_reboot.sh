@@ -13,16 +13,8 @@ sudo xbps-install -S pavucontrol
 sudo xbps-install -S alsa-utils alsa-plugins
 sudo xbps-install -S pipewire wireplumber
 
-sudo xbps-install -S chrony
-sudo ln -s /etc/sv/chronyd /var/service/
-
 sudo xbps-install -S hyprland hyprpaper hyprlock hypridle
 sudo xbps-install -S wlogout
-
-curl -O -L github.com/ful1e5/Bibata_Cursor/releases/download/latest/Bibata.tar.xz
-tar -xvf Bibata.tar.gz
-mv Bibata-* ~/.local/share/icons/
-sudo mv Bibata-* /usr/share/icons/
 
 sudo xbps-install -S sway swaybg swayidle
 
@@ -45,8 +37,6 @@ sudo xbps-install -S yazi nemo
 
 sudo xbps-install -S firefox
 
-sudo xbps-install -S hyprshot
-
 sudo xbps-install -S gnome-themes-extra
 
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
@@ -55,9 +45,9 @@ gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 sudo xbps-install -S rust
 
 sudo xbps-install -S bottom curl fastfetch fzf gzip htop lazygit starship tar tmux unzip wget
-sudo xbps-install -S tree-sitter tree-sitter-cli
+sudo xbps-install -S tree-sitter
 sudo xbps-install -S bat eza fd ripgrep tldr
 
 sudo xbps-reconfigure -fa
 
-echo 'Now reboot the system with "sudo shutdown -h now" to apply the changes'
+echo 'Now reboot the system with "sudo shutdown -r now" to apply the changes'
