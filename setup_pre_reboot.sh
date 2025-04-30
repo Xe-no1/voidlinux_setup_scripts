@@ -26,7 +26,7 @@ passwd
 
 useradd mazentech
 passwd mazentech
-usermod -aG wheel,storage,power,video,audio,input mazentech
+usermod -aG wheel,storage,video,audio mazentech
 
 chsh -s /bin/bash root
 EDITOR=nvim visudo
