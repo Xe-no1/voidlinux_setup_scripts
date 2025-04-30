@@ -42,7 +42,7 @@ sudo xbps-install -S gnome-themes-extra
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 
-sudo xbps-install -S rust
+sudo xbps-install -S cargo
 
 sudo xbps-install -S bottom curl fastfetch fzf gzip htop lazygit starship tar tmux unzip wget
 sudo xbps-install -S tree-sitter
