@@ -46,7 +46,7 @@ ln -s /etc/sv/NetworkManager /etc/runit/runsvdir/default/
 ln -s /etc/sv/sshd /etc/runit/runsvdir/default/
 ln -s /etc/sv/chrony /etc/runit/runsvdir/default/
 
-git clone https://github.com/Xe-no1/linux_dotfiles /home/mazentech/linux_dofiles
+git clone https://github.com/Xe-no1/linux_dotfiles /home/mazentech/linux_dotfiles
 
 xbps-reconfigure -fa
 
