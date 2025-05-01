@@ -9,11 +9,11 @@ ln -sf /usr/share/zoneinfo/Asia/Qatar /etc/localtime
 nvim /etc/default/libc-locales
 xbps-reconfigure -f glibc-locales
 
-echo "LANG=en_US.UTF-8" >> /etc/locale.conf
+echo "LANG=en_US.UTF-8" >>/etc/locale.conf
 
-echo "voidlinux" > /etc/hostname
+echo "voidlinux" >/etc/hostname
 
-cat <<EOF > /etc/hosts
+cat <<EOF >/etc/hosts
 #
 # /etc/hosts: static lookup table for host names
 #
@@ -45,6 +45,8 @@ ln -s /etc/sv/dbus /etc/runit/runsvdir/default/
 ln -s /etc/sv/NetworkManager /etc/runit/runsvdir/default/
 ln -s /etc/sv/sshd /etc/runit/runsvdir/default/
 ln -s /etc/sv/chrony /etc/runit/runsvdir/default/
+
+git clone https://github.com/Xe-no1/linux_dotfiles /home/mazentech/linux_dofiles
 
 xbps-reconfigure -fa
 

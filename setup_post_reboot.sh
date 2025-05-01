@@ -46,6 +46,8 @@ sudo xbps-install -S bottom curl fastfetch fzf gzip btop lazygit starship tar tm
 sudo xbps-install -S tree-sitter
 sudo xbps-install -S bat eza fd ripgrep tldr
 
+sudo ln -sf /home/mazentech/linux_dotfiles/* /home/mazentech/.config/
+
 sudo xbps-reconfigure -fa
 
 echo 'Now reboot the system with "sudo shutdown -r now" to apply the changes'
