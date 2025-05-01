@@ -29,7 +29,7 @@ sudo xbps-install -S alacritty kitty
 
 sudo xbps-install -S wofi
 
-sudo xbps-install -S waybar
+sudo xbps-install -S Waybar
 
 sudo xbps-install -S brightnessctl
 
