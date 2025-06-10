@@ -9,16 +9,17 @@ xbps-install -S terminus-font
 
 setfont ter-132n
 
-umount -A --recursive /mnt # make sure everything is unmounted before we start
-
 # disk prep
-sgdisk -Z ${DISK} # zap all on disk
-sgdisk -a 2048 -o ${DISK} # new gpt disk 2048 alignment
+sgdisk -Z /dev/sda # zap all on disk
+sgdisk -a 2048 -o /dev/sda # new gpt disk 2048 alignment
 
 # create partitions
-sgdisk -n 1::+300M --typecode=2:ef00 --change-name=2:'EFIBOOT' ${DISK} # partition 1 (UEFI Boot Partition)
-sgdisk -n 2::-0 --typecode=3:8300 --change-name=3:'ROOT' ${DISK} # partition 2 (Root), default start, remaining
-partprobe ${DISK} # reread partition table to ensure it is correct
+sgdisk -n 1::+300M --typecode=2:ef00 --change-name=2:'EFIBOOT' /dev/sda # partition 1 (UEFI Boot Partition)
+sgdisk -n 2::-0 --typecode=3:8300 --change-name=3:'ROOT' /dev/sda # partition 2 (Root), default start, remaining
+partprobe /dev/sda # reread partition table to ensure it is correct
+
+lsblk
+sleep 5
 
 mkfs.fat -F32 -n EFI /dev/sda1
 mkfs.ext4 /dev/sda2
