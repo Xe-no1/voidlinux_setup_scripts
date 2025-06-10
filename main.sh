@@ -127,7 +127,7 @@ chroot () {
   xbps-install -S tree-sitter
   xbps-install -S bat eza fd ripgrep tldr
 
-  git clone https://github.com/Xe-no1/linux_dotfiles /home/mazentech/linux_dotfiles
+  git clone https://codeberg.org/mazentech/linux_dotfiles.git /home/mazentech/linux_dotfiles
 
   ln -sf /home/mazentech/linux_dotfiles/* /home/mazentech/.config/
 
