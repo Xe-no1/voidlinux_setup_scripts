@@ -3,6 +3,7 @@
 set -euxo pipefail
 
 sudo xbps-install -Su
+sudo xbps-install -Su
 
 sudo xbps-install -S xdg-user-dirs
 xdg-user-dirs-update
@@ -23,17 +24,9 @@ sudo xbps-install -S wmenu grim
 sudo xbps-install -S noto-fonts-cjk ttf-opensans
 sudo xbps-install -S noto-fonts-emoji
 
-sudo xbps-install -S zsh
-
 sudo xbps-install -S alacritty kitty
 
-sudo xbps-install -S wofi
-
-sudo xbps-install -S Waybar
-
-sudo xbps-install -S brightnessctl
-
-sudo xbps-install -S yazi nemo
+sudo xbps-install -S yazi nautilus
 
 sudo xbps-install -S firefox
 
