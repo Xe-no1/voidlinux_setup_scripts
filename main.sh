@@ -118,7 +118,7 @@ chroot () {
 
   xbps-install -S firefox
 
-  xbps-install -S lxappearance qt6ct gnome-themes-extra breeze breeze-gtk
+  xbps-install -S lxappearance nwg-look qt6ct qt5ct gnome-themes-extra breeze breeze-gtk
 
   gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
   gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
