@@ -18,9 +18,6 @@ sgdisk -n 1::+300M --typecode=2:ef00 --change-name=2:'EFIBOOT' /dev/sda # partit
 sgdisk -n 2::-0 --typecode=3:8300 --change-name=3:'ROOT' /dev/sda # partition 2 (Root), default start, remaining
 partprobe /dev/sda # reread partition table to ensure it is correct
 
-lsblk
-sleep 5
-
 mkfs.fat -F32 -n EFI /dev/sda1
 mkfs.ext4 /dev/sda2
 
