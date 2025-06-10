@@ -3,7 +3,7 @@
 set -euxo pipefail
 
 xbps-install -Su
-xbps-install -Su
+xbps-install -u xbps
 
 xbps-install -S terminus-font
 
@@ -43,7 +43,7 @@ echo 'Now chroot into your new system via "xchroot /mnt /bin/bash" and execute s
 
 chroot () {
   xbps-install -Su
-  xbps-install -Su
+  xbps-install -u xbps
 
   nvim /etc/rc.conf
 
@@ -132,7 +132,7 @@ chroot () {
   ln -sf /home/mazentech/linux_dotfiles/* /home/mazentech/.config/
 
   xbps-install -Su
-  xbps-install -Su
+  xbps-install -u xbps
 
   xbps-reconfigure -fa
 }
