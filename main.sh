@@ -43,8 +43,8 @@ parted -sf /dev/sda type 2 B921B045-1DF0-41C3-AF44-4C6F280D3FAE
 # using sgdisk
 sgdisk -Z /dev/sda                                                 # zap all on disk
 sgdisk -a 2048 -o /dev/sda                                         # new gpt disk 2048 alignment
-sgdisk -n 2::+64M --typecode=1:ef00 --change-name=1:'esp' /dev/sda # partition 2 (UEFI Boot Partition)
-sgdisk -n 3::-0 --typecode=2:8305 --change-name=2:'root' /dev/sda  # partition 3 (Root), default start, remaining
+sgdisk -n 1::+64M --typecode=1:ef00 --change-name=1:'esp' /dev/sda # partition 2 (UEFI Boot Partition)
+sgdisk -n 2::-0 --typecode=2:8305 --change-name=2:'root' /dev/sda  # partition 3 (Root), default start, remaining
 
 # using sfdisk
 sfdisk --delete /dev/sda
