@@ -18,7 +18,7 @@ testparted() {
 
   partprobe /dev/sda # reread partition table to ensure it is correct
 
-  sfdisk -d >>parted.sfdisk
+  sfdisk -d /dev/sda >>parted.sfdisk
   parted -l >>parted.parted
 }
 
@@ -31,7 +31,7 @@ testsgdisk() {
 
   partprobe /dev/sda # reread partition table to ensure it is correct
 
-  sfdisk -d >>sgdisk.sfdisk
+  sfdisk -d /dev/sda >>sgdisk.sfdisk
   parted -l >>sgdisk.parted
 }
 
@@ -46,7 +46,7 @@ EOF
 
   partprobe /dev/sda # reread partition table to ensure it is correct
 
-  sfdisk -d >>sfdisk.sfdisk
+  sfdisk -d /dev/sda >>sfdisk.sfdisk
   parted -l >>sfdisk.parted
 }
 
@@ -74,7 +74,7 @@ EOF
 
   partprobe /dev/sda # reread partition table to ensure it is correct
 
-  sfdisk -d >>gdisk.sfdisk
+  sfdisk -d /dev/sda >>gdisk.sfdisk
   parted -l >>gdisk.parted
 }
 
@@ -111,7 +111,7 @@ EOF
 
   partprobe /dev/sda # reread partition table to ensure it is correct
 
-  sfdisk -d >>fdisk.sfdisk
+  sfdisk -d /dev/sda >>fdisk.sfdisk
   parted -l >>fdisk.parted
 }
 
