@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-set -euxo pipefail
+set -euo pipefail
 
 xbps-install -Su
 xbps-install -u xbps
@@ -10,7 +10,7 @@ xbps-install -S terminus-font
 
 setfont ter-132n
 
-echo "Warning!!! Wiping the disk in 5 seconds, press ctrl+c to interrupt"
+echo "Warning!!! Wiping the disk in 5 seconds, press ctrl+c to interrupt."
 echo "5"
 sleep 1
 echo "4"
@@ -27,83 +27,44 @@ echo "Wiping now"
 # `B921B045-1DF0-41C3-AF44-4C6F280D3FAE` is the GUID for a Linux ARM64 root
 # and `4F68BCE3-E8CD-4DB1-96E7-FBCAF984B709` is the GUID for a Linux x86-64 root
 # visit 'https://en.wikipedia.org/wiki/GUID_Partition_Table#Partition_type_GUIDs' for other GUID's
+
 if mountpoint -q /mnt; then
   umount -AR /mnt # make sure everything is unmounted before we start
 fi
 
-wipefs -a /dev/sda
-
 # using parted
-parted -sf /dev/sda mklabel gpt
-parted -sf /dev/sda mkpart '"esp"' fat32 1MiB 65MiB
-parted -sf /dev/sda set 1 esp on
-parted -sf /dev/sda mkpart '"root"' ext4 65MiB 100%
-parted -sf /dev/sda type 2 B921B045-1DF0-41C3-AF44-4C6F280D3FAE
+testparted() {
+  wipefs -a /dev/sda
+  parted -sf /dev/sda mklabel gpt
+  parted -sf /dev/sda mkpart '"esp"' fat32 1MiB 65MiB
+  parted -sf /dev/sda set 1 esp on
+  parted -sf /dev/sda mkpart '"root"' ext4 65MiB 100%
+  parted -sf /dev/sda type 2 B921B045-1DF0-41C3-AF44-4C6F280D3FAE
+
+  partprobe /dev/sda # reread partition table to ensure it is correct
+}
 
 # using sgdisk
-sgdisk -Z /dev/sda                                                 # zap all on disk
-sgdisk -a 2048 -o /dev/sda                                         # new gpt disk 2048 alignment
-sgdisk -n 1::+64M --typecode=1:ef00 --change-name=1:'esp' /dev/sda # partition 2 (UEFI Boot Partition)
-sgdisk -n 2::-0 --typecode=2:8305 --change-name=2:'root' /dev/sda  # partition 3 (Root), default start, remaining
+testsgdisk() {
+  sgdisk --zap-all /dev/sda                                             # zap all on disk
+  sgdisk --set-alignment 2048 --clear /dev/sda                          # new gpt disk 2048 alignment
+  sgdisk --new=1::+64M --typecode=1:ef00 --change-name=1:'esp' /dev/sda # partition 1 (EFI system partition)
+  sgdisk --new=2::-0 --typecode=2:8305 --change-name=2:'root' /dev/sda  # partition 2 (Root partition), default start, remaining
+
+  partprobe /dev/sda # reread partition table to ensure it is correct
+}
 
 # using sfdisk
-sfdisk --delete /dev/sda
-sfdisk -w always /dev/sda <<EOF
+testsfdisk() {
+  sfdisk --delete /dev/sda
+  sfdisk --wipe always /dev/sda <<EOF
 label: gpt
 /dev/sda1: start=, size=64MiB, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B, name="esp"
 /dev/sda2: start=, size=, type=B921B045-1DF0-41C3-AF44-4C6F280D3FAE, name="root"
 EOF
 
-# using gdisk
-sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<EOF | gdisk /dev/sda
-  o # create a new GPT disk label
-  n # new partition
-  1 # partition number 1
-    # default - start at beginning of disk 
-  +64M # 64 MiB boot parttion
-  ef00 # set partition 1 as the ESP
-  c # change the PARTLABEL of partition 1
-  esp # set the partlabel of partiton 1 to 'esp'
-  2 # partion number 2
-    # default, start immediately after preceding partition
-    # default, extend partition to end of disk
-  8305 # set partition 2 as Linux ARM64 root
-  c # change the PARTLABEL of partition 2
-  2 # partition number 2
-  root # set the PARTLABEL of partiton 2 to 'root'
-  w # write the partition table and quit
-EOF
-
-# using fdisk
-sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<EOF | fdisk /dev/sda
-  g # create a new GPT disk label
-  n # new partition
-  1 # partition number 1
-    # default - start at beginning of disk 
-  +64M # 64 MiB boot partition
-  t # change the type of partion
-  uefi # set partition 1 as the ESP
-  x # enter "expert mode"
-  n # change the PARTLABEL of partition 1
-  esp # set the partlabel of partiton 1 to 'esp'
-  r # return back to normal mode
-  n # new partition
-  p # primary partition
-  2 # partion number 2
-    # default, start immediately after preceding partition
-    # default, extend partition to end of disk
-  t # change the type of partition
-  2 # partition number 2
-  27 # set partition 2 as Linux root (ARM64)
-  x # enter "expert mode"
-  n # change the PARTLABEL of partition 2
-  2 # partition number 2
-  root # set the PARTLABEL of partiton 2 to 'root'
-  r # return back to normal mode
-  w # write the partition table and quit
-EOF
-
-partprobe /dev/sda # reread partition table to ensure it is correct
+  partprobe /dev/sda # reread partition table to ensure it is correct
+}
 
 mkfs.vfat /dev/sda1
 mkfs.ext4 /dev/sda2
@@ -112,8 +73,12 @@ mount /dev/sda2 /mnt
 mkdir -p /mnt/efi
 mount /dev/sda1 /mnt/efi
 
-REPO=https://repo-de.voidlinux.org/current/aarch64
-ARCH=aarch64
+case $(uname --machine) in
+aarch64) REPO=https://repo-de.voidlinux.org/current/aarch64 ;;
+*) REPO=https://repo-de.voidlinux.org/current ;;
+esac
+
+ARCH=$(uname --machine)
 
 mkdir -p /mnt/var/db/xbps/keys
 cp /var/db/xbps/keys/* /mnt/var/db/xbps/keys/
@@ -159,25 +124,12 @@ EOF
   echo "Enter the password of $username:"
   passwd "$username"
 
-  echo "Do you want $username to be a sudo capable user? [y/n]/[yes/no]"
+  echo "Do you want $username to be a sudo capable user? [Y/n]"
   read -r answer
 
   case "$answer" in
-  "y")
-    usermod -aG wheel,storage,video,audio "$username"
-    ;;
-  "Y")
-    usermod -aG wheel,storage,video,audio "$username"
-    ;;
-  "yes")
-    usermod -aG wheel,storage,video,audio "$username"
-    ;;
-  "Yes")
-    usermod -aG wheel,storage,video,audio "$username"
-    ;;
-  *)
-    usermod -aG storage,video,audio "$username"
-    ;;
+  "n" | "N" | "no" | "No" | "NO") usermod -aG storage,video,audio "$username" ;;
+  *) usermod -aG wheel,storage,video,audio "$username" ;;
   esac
 
   chsh -s /bin/bash root
@@ -232,7 +184,7 @@ EOF
   xbps-install -S git curl wget neovim fastfetch fzf gzip btop
   xbps-install -S bat eza fd ripgrep tldr
 
-  git clone https://codeberg.org/mazentech/linux_dotfiles.git /home/mazentech/linux_dotfiles
+  git clone https://codeberg.org/mazentech/linux_dotfiles.git /home/"$username"/linux_dotfiles
 
   ln -sf /home/"$username"/linux_dotfiles/* /home/"$username"/.config/
 
@@ -244,4 +196,8 @@ EOF
 
 xchroot /mnt chrootcmds
 
-echo 'Now please unmount all drives by executing "umount -R /mnt"!'
+if mountpoint -q /mnt; then
+  umount -AR /mnt # make sure everything is unmounted before we start
+fi
+
+echo 'Installation completed succesfully! Run "shutdown -r now" to reboot into the new system and kernel.'
