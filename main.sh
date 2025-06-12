@@ -32,36 +32,12 @@ if mountpoint -q /mnt; then
   umount -AR /mnt # make sure everything is unmounted before we start
 fi
 
-# using parted
-testparted() {
-  wipefs -a /dev/sda
-  parted -sf /dev/sda mklabel gpt
-  parted -sf /dev/sda mkpart '"esp"' fat32 1MiB 65MiB
-  parted -sf /dev/sda set 1 esp on
-  parted -sf /dev/sda mkpart '"root"' ext4 65MiB 100%
-  parted -sf /dev/sda type 2 B921B045-1DF0-41C3-AF44-4C6F280D3FAE
-
-  partprobe /dev/sda # reread partition table to ensure it is correct
-}
-
 # using sgdisk
 testsgdisk() {
   sgdisk --zap-all /dev/sda                                             # zap all on disk
   sgdisk --set-alignment 2048 --clear /dev/sda                          # new gpt disk 2048 alignment
   sgdisk --new=1::+64M --typecode=1:ef00 --change-name=1:'esp' /dev/sda # partition 1 (EFI system partition)
   sgdisk --new=2::-0 --typecode=2:8305 --change-name=2:'root' /dev/sda  # partition 2 (Root partition), default start, remaining
-
-  partprobe /dev/sda # reread partition table to ensure it is correct
-}
-
-# using sfdisk
-testsfdisk() {
-  sfdisk --delete /dev/sda
-  sfdisk --wipe always /dev/sda <<EOF
-label: gpt
-/dev/sda1: start=, size=64MiB, type=C12A7328-F81F-11D2-BA4B-00A0C93EC93B, name="esp"
-/dev/sda2: start=, size=, type=B921B045-1DF0-41C3-AF44-4C6F280D3FAE, name="root"
-EOF
 
   partprobe /dev/sda # reread partition table to ensure it is correct
 }
