@@ -55,6 +55,7 @@ testgdisk() {
   sgdisk -Z /dev/sda
   sed -e 's/\s*\([\+0-9a-zA-Z]*\).*/\1/' <<EOF | gdisk /dev/sda
   o # create a new GPT disk label
+  Y # confirm creating a new disk label
   n # new partition
   1 # partition number 1
     # default - start at beginning of disk 
@@ -62,6 +63,7 @@ testgdisk() {
   ef00 # set partition 1 as the ESP
   c # change the PARTLABEL of partition 1
   esp # set the partlabel of partiton 1 to 'esp'
+  n # new partition
   2 # partion number 2
     # default, start immediately after preceding partition
     # default, extend partition to end of disk
@@ -70,6 +72,7 @@ testgdisk() {
   2 # partition number 2
   root # set the PARTLABEL of partiton 2 to 'root'
   w # write the partition table and quit
+  Y # confirm writing to the disk
 EOF
 
   partprobe /dev/sda # reread partition table to ensure it is correct
