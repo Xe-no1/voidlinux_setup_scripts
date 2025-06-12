@@ -5,7 +5,7 @@ set -euo pipefail
 xbps-install -Su
 xbps-install -u xbps
 
-xbps-install -S gptfdisk parted
+xbps-install -S gptfdisk
 xbps-install -S terminus-font
 
 setfont ter-132n
@@ -33,14 +33,12 @@ if mountpoint -q /mnt; then
 fi
 
 # using sgdisk
-testsgdisk() {
-  sgdisk --zap-all /dev/sda                                             # zap all on disk
-  sgdisk --set-alignment 2048 --clear /dev/sda                          # new gpt disk 2048 alignment
-  sgdisk --new=1::+64M --typecode=1:ef00 --change-name=1:'esp' /dev/sda # partition 1 (EFI system partition)
-  sgdisk --new=2::-0 --typecode=2:8305 --change-name=2:'root' /dev/sda  # partition 2 (Root partition), default start, remaining
+sgdisk --zap-all /dev/sda                                             # zap all on disk
+sgdisk --set-alignment 2048 --clear /dev/sda                          # new gpt disk 2048 alignment
+sgdisk --new=1::+64M --typecode=1:ef00 --change-name=1:'esp' /dev/sda # partition 1 (EFI system partition)
+sgdisk --new=2::-0 --typecode=2:8305 --change-name=2:'root' /dev/sda  # partition 2 (Root partition), default start, remaining
 
-  partprobe /dev/sda # reread partition table to ensure it is correct
-}
+partprobe /dev/sda # reread partition table to ensure it is correct
 
 mkfs.vfat /dev/sda1
 mkfs.ext4 /dev/sda2
