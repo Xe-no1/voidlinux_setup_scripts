@@ -19,7 +19,7 @@ testparted() {
   partprobe /dev/sda # reread partition table to ensure it is correct
 
   sfdisk -d /dev/sda >>parted.sfdisk
-  parted -l >>parted.parted
+  parted /dev/sda print >>parted.parted
 }
 
 # using sgdisk
@@ -32,7 +32,7 @@ testsgdisk() {
   partprobe /dev/sda # reread partition table to ensure it is correct
 
   sfdisk -d /dev/sda >>sgdisk.sfdisk
-  parted -l >>sgdisk.parted
+  parted /dev/sda print >>sgdisk.parted
 }
 
 # using sfdisk
@@ -47,7 +47,7 @@ EOF
   partprobe /dev/sda # reread partition table to ensure it is correct
 
   sfdisk -d /dev/sda >>sfdisk.sfdisk
-  parted -l >>sfdisk.parted
+  parted /dev/sda print >>sfdisk.parted
 }
 
 # using gdisk
@@ -75,7 +75,7 @@ EOF
   partprobe /dev/sda # reread partition table to ensure it is correct
 
   sfdisk -d /dev/sda >>gdisk.sfdisk
-  parted -l >>gdisk.parted
+  parted /dev/sda print >>gdisk.parted
 }
 
 # using fdisk
@@ -112,7 +112,7 @@ EOF
   partprobe /dev/sda # reread partition table to ensure it is correct
 
   sfdisk -d /dev/sda >>fdisk.sfdisk
-  parted -l >>fdisk.parted
+  parted /dev/sda print >>fdisk.parted
 }
 
 echo "What partitioning tool would you like to test?"
