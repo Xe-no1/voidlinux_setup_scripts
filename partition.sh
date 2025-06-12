@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-set -euxo pipefail
+set -euo pipefail
 
 # disk partitioning, note that `C12A7328-F81F-11D2-BA4B-00A0C93EC93B` is the GUID for an EFI system
 # `B921B045-1DF0-41C3-AF44-4C6F280D3FAE` is the GUID for a Linux ARM64 root
