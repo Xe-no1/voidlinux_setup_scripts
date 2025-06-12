@@ -94,7 +94,6 @@ testfdisk() {
   esp # set the partlabel of partiton 1 to 'esp'
   r # return back to normal mode
   n # new partition
-  p # primary partition
   2 # partion number 2
     # default, start immediately after preceding partition
     # default, extend partition to end of disk
