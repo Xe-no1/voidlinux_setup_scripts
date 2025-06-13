@@ -2,13 +2,7 @@
 
 set -euo pipefail
 
-xbps-install -Su
-xbps-install -u xbps
-
 xbps-install -S gptfdisk
-xbps-install -S terminus-font
-
-setfont ter-132n
 
 echo "Warning!!! Wiping the disk in 5 seconds, press ctrl+c to interrupt."
 echo "5"
@@ -47,12 +41,9 @@ mount /dev/sda2 /mnt
 mkdir -p /mnt/efi
 mount /dev/sda1 /mnt/efi
 
-case $(uname --machine) in
-aarch64) REPO=https://repo-de.voidlinux.org/current/aarch64 ;;
-*) REPO=https://repo-de.voidlinux.org/current ;;
-esac
+REPO=https://repo-de.voidlinux.org/current/aarch64
 
-ARCH=$(uname --machine)
+ARCH=aarch64
 
 mkdir -p /mnt/var/db/xbps/keys
 cp /var/db/xbps/keys/* /mnt/var/db/xbps/keys/
@@ -67,14 +58,12 @@ chrootcmds() {
   xbps-install -Su
   xbps-install -u xbps
 
-  sed -i 's/^#FONT="lat9w-16"/FONT="ter-132n"/' /etc/sudoers
+  sed -i 's/^#FONT="lat9w-16"/FONT="ter-132n"/' /etc/rc.conf
 
   ln -sf /usr/share/zoneinfo/Asia/Qatar /etc/localtime
 
-  sed -i 's/^#en_US.UTF-8/en_US.UTF-8/' /etc/sudoers
+  sed -i 's/^#en_US.UTF-8/en_US.UTF-8/' /etc/default/libc-locales
   xbps-reconfigure -f glibc-locales
-
-  echo "LANG=en_US.UTF-8" >>/etc/locale.conf
 
   echo "voidlinux" >/etc/hostname
 
@@ -127,51 +116,13 @@ EOF
   ln -s /etc/sv/sshd /etc/runit/runsvdir/default/
   ln -s /etc/sv/chrony /etc/runit/runsvdir/default/
 
-  xbps-install -S spice-vdagent xf86-video-qxl mesa
-
-  xbps-install -S pavucontrol
-  xbps-install -S alsa-utils alsa-plugins
-  xbps-install -S pipewire
-
-  xbps-install -S hyprland hyprpaper
-
-  xbps-install -S sway swaybg
-
-  xbps-install -S noto-fonts-cjk ttf-opensans
-  xbps-install -S noto-fonts-emoji
-
-  xbps-install -S tofi
-
-  xbps-install -S Waybar
-
-  xbps-install -S alacritty kitty ghostty
-
-  xbps-install -S yazi nemo
-
-  xbps-install -S firefox
-
-  xbps-install -S lxappearance nwg-look qt6ct qt5ct gnome-themes-extra breeze breeze-gtk
-
-  gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-  gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-
-  xbps-install -S git curl wget neovim fastfetch fzf gzip btop
-  xbps-install -S bat eza fd ripgrep tldr
-
-  git clone https://codeberg.org/mazentech/linux_dotfiles.git /home/"$username"/linux_dotfiles
-
-  ln -sf /home/"$username"/linux_dotfiles/* /home/"$username"/.config/
-
-  xbps-install -Su
-  xbps-install -u xbps
-
   xbps-reconfigure -fa
 }
 
-xchroot /mnt chrootcmds
+xchroot /mnt /bin/bash -c chrootcmds
 
 if mountpoint -q /mnt; then
-  umount -AR /mnt # make sure everything is unmounted before we start
+  umount -AR /mnt
 fi
 
 echo 'Installation completed succesfully! Run "shutdown -r now" to reboot into the new system and kernel.'
