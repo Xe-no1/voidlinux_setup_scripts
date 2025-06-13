@@ -54,6 +54,9 @@ xgenfstab -U /mnt >/mnt/etc/fstab
 
 ###############################
 
+username="mazentech"
+answer="yes"
+
 xchroot /mnt /bin/bash <<EOC
 
 xbps-install -Su
@@ -79,9 +82,6 @@ EOF
 
 echo "Enter the root password"
 passwd
-
-echo "Enter the username of choice:"
-read -r username
 
 useradd "$username"
 
