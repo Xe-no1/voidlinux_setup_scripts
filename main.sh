@@ -119,6 +119,8 @@ EOF
   xbps-reconfigure -fa
 }
 
+export -f chrootcmds
+
 xchroot /mnt /bin/bash -c chrootcmds
 
 if mountpoint -q /mnt; then
