@@ -125,7 +125,7 @@ EOC
 
 chmod 0755 /mnt/chrootcmds
 
-xchroot /mnt /mnt/chrootcmds
+xchroot /mnt /chrootcmds
 
 if mountpoint -q /mnt; then
   umount -AR /mnt
