@@ -126,9 +126,11 @@ EOF
 
 # chmod 0755 /mnt/chrootcmds
 
-export -f install_func
-
-xchroot /mnt install_func
+arch-chroot /mnt bash -c '
+$(deckare -f install_func)
+$(decpare -p username answer)
+dothis
+'
 
 if mountpoint -q /mnt; then
   umount -AR /mnt
