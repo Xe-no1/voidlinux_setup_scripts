@@ -59,7 +59,7 @@ export answer="yes"
 
 # cat <<EOC >/mnt/chrootcmds
 
-install_func() {
+{
   set -euo pipefail
 
   xbps-install -Syu
@@ -121,16 +121,10 @@ EOF
   ln -s /etc/sv/chrony /etc/runit/runsvdir/default/
 
   xbps-reconfigure -fa
-}
+} | xchroot /mnt
 # EOC
 
 # chmod 0755 /mnt/chrootcmds
-
-arch-chroot /mnt bash -c '
-$(deckare -f install_func)
-$(decpare -p username answer)
-dothis
-'
 
 if mountpoint -q /mnt; then
   umount -AR /mnt
