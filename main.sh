@@ -131,8 +131,8 @@ END
 
 # xchroot /mnt /bin/bash
 
-if mountpoint -q /mnt; then
-  umount -AR /mnt
-fi
+# if mountpoint -q /mnt; then
+#   umount -AR /mnt
+# fi
 
 echo 'Installation completed succesfully! Run "shutdown -r now" to reboot into the new system and kernel.'
