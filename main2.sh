@@ -321,7 +321,7 @@ echo -ne "
                     Installing Prerequisites
 -------------------------------------------------------------------------
 "
-xbps-install -S gptfdisk parted btrfs-progs e2fsprogs
+xbps-install -Sy gptfdisk parted btrfs-progs e2fsprogs
 echo -ne "
 -------------------------------------------------------------------------
                     Formatting Disk
@@ -445,14 +445,14 @@ cp /var/db/xbps/keys/* /mnt/var/db/xbps/keys/
 case $FS in
 btrfs)
   case $LIBC in
-  glibc) XBPS_ARCH=$ARCH xbps-install -S -r /mnt -R "$REPO" base-system base-devel linux-mainline linux-firmware btrfs-progs ;;
-  musl) XBPS_ARCH=$ARCH xbps-install -S -r /mnt -R "$REPO" base-system base-devel linux-mainline musl linux-firmware btrfs-progs ;;
+  glibc) XBPS_ARCH=$ARCH xbps-install -Sy -r /mnt -R "$REPO" base-system base-devel linux-mainline linux-firmware btrfs-progs ;;
+  musl) XBPS_ARCH=$ARCH xbps-install -Sy -r /mnt -R "$REPO" base-system base-devel linux-mainline musl linux-firmware btrfs-progs ;;
   esac
   ;;
 ext4)
   case $LIBC in
-  glibc) XBPS_ARCH=$ARCH xbps-install -S -r /mnt -R "$REPO" base-system base-devel linux-mainline linux-firmware e2fsprogs ;;
-  musl) XBPS_ARCH=$ARCH xbps-install -S -r /mnt -R "$REPO" base-system base-devel linux-mainline musl linux-firmware e2fsprogs ;;
+  glibc) XBPS_ARCH=$ARCH xbps-install -Sy -r /mnt -R "$REPO" base-system base-devel linux-mainline linux-firmware e2fsprogs ;;
+  musl) XBPS_ARCH=$ARCH xbps-install -Sy -r /mnt -R "$REPO" base-system base-devel linux-mainline musl linux-firmware e2fsprogs ;;
   esac
   ;;
 esac
@@ -527,10 +527,10 @@ echo -ne "
 # determine processor type and install microcode
 if grep -q "GenuineIntel" /proc/cpuinfo; then
   echo "Installing Intel microcode"
-  xbps-install -S intel-ucode
+  xbps-install -Sy intel-ucode
 elif grep -q "AuthenticAMD" /proc/cpuinfo; then
   echo "Installing AMD microcode"
-  xbps-install -S linux-firmware-amd
+  xbps-install -Sy linux-firmware-amd
 else
   echo "Unable to determine CPU vendor. Skipping microcode installation."
 fi
@@ -543,19 +543,19 @@ echo -ne "
 # Graphics Drivers find and install
 if echo "${gpu_type}" | grep -E "NVIDIA|GeForce"; then
   echo "Installing NVIDIA drivers: nvidia"
-  xbps-install -S nvidia
+  xbps-install -Sy nvidia
 elif echo "${gpu_type}" | grep 'VGA' | grep -E "Radeon|AMD"; then
   echo "Installing AMD drivers: xf86-video-amdgpu"
-  xbps-install -S xf86-video-amdgpu mesa-dri vulkan-loader mesa-vaapi mesa-vdpau mesa-vulkan-radeon amdvlk
+  xbps-install -Sy xf86-video-amdgpu mesa-dri vulkan-loader mesa-vaapi mesa-vdpau mesa-vulkan-radeon amdvlk
 elif echo "${gpu_type}" | grep -E "Integrated Graphics Controller"; then
   echo "Installing Intel drivers:"
-  xbps-install -S mesa-dri vulkan-loader mesa-vulkan-intel intel-video-accel
+  xbps-install -Sy mesa-dri vulkan-loader mesa-vulkan-intel intel-video-accel
 elif echo "${gpu_type}" | grep -E "Intel Corporation UHD"; then
   echo "Installing Intel drivers:"
-  xbps-install -S mesa-dri vulkan-loader mesa-vulkan-intel intel-video-accel
+  xbps-install -Sy mesa-dri vulkan-loader mesa-vulkan-intel intel-video-accel
 else
   echo "Installing VM drivers:"
-  xbps-install -S spice-vdagent xf86-video-qxl mesa
+  xbps-install -Sy spice-vdagent xf86-video-qxl mesa
 fi
 
 echo -ne "
@@ -636,9 +636,9 @@ echo -ne "
                     Updating system and generating initramfs
 -------------------------------------------------------------------------
 "
-xbps-install -Su
-xbps-install -u xbps
-xbps-install -Su
+xbps-install -Syu
+xbps-install -yu xbps
+xbps-install -Syu
 echo "Updated entire system successfully"
 
 xbps-reconfigure -fa
