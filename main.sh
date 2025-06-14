@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-xbps-install -S gptfdisk
+xbps-install -Sy gptfdisk parted
 
 echo "Warning!!! Wiping the disk in 5 seconds, press ctrl+c to interrupt."
 echo "5"
@@ -48,7 +48,7 @@ ARCH=aarch64
 mkdir -p /mnt/var/db/xbps/keys
 cp /var/db/xbps/keys/* /mnt/var/db/xbps/keys/
 
-XBPS_ARCH=$ARCH xbps-install -S -r /mnt -R "$REPO" base-system base-devel linux-mainline linux-firmware
+XBPS_ARCH=$ARCH xbps-install -Sy -r /mnt -R "$REPO" base-system base-devel linux-mainline linux-firmware
 
 xgenfstab -U /mnt >/mnt/etc/fstab
 
@@ -62,8 +62,8 @@ answer="yes"
 install_func() {
   set -euo pipefail
 
-  xbps-install -Su
-  xbps-install -u xbps
+  xbps-install -Syu
+  xbps-install -yu xbps
 
   sed -i 's/^#FONT="lat9w-16"/FONT="ter-132n"/' /etc/rc.conf
 
@@ -105,16 +105,16 @@ EOF
   sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
   sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 
-  xbps-install -S
-  xbps-install void-repo-nonfree
+  xbps-install -Sy
+  xbps-install -y void-repo-nonfree
   echo repository=https://raw.githubusercontent.com/Makrennel/hyprland-void/repository-aarch64-glibc | tee /etc/xbps.d/hyprland-void.conf
-  xbps-install -S
+  xbps-install -Sy
 
-  xbps-install -S grub-arm64-efi
+  xbps-install -Sy grub-arm64-efi
 
   grub-install --target=arm64-efi --efi-directory=/efi --bootloader-id="Void"
 
-  xbps-install NetworkManager elogind chrony openssh terminus-font fastfetch curl tar python
+  xbps-install -Sy NetworkManager elogind chrony openssh terminus-font fastfetch curl tar python
   ln -s /etc/sv/dbus /etc/runit/runsvdir/default/
   ln -s /etc/sv/NetworkManager /etc/runit/runsvdir/default/
   ln -s /etc/sv/sshd /etc/runit/runsvdir/default/
