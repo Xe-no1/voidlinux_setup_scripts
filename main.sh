@@ -57,7 +57,10 @@ xgenfstab -U /mnt >/mnt/etc/fstab
 username="mazentech"
 answer="yes"
 
-xchroot /mnt /bin/bash <<EOC
+cat <<EOC >/mnt/chrootcmds
+#!/usr/bin/bash
+
+set -euo pipefail
 
 xbps-install -Su
 xbps-install -u xbps
@@ -119,6 +122,10 @@ ln -s /etc/sv/chrony /etc/runit/runsvdir/default/
 
 xbps-reconfigure -fa
 EOC
+
+chmod 0755 /mnt/chrootcmds
+
+xchroot /mnt /mnt/chrootcmds
 
 if mountpoint -q /mnt; then
   umount -AR /mnt
