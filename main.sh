@@ -57,24 +57,24 @@ xgenfstab -U /mnt >/mnt/etc/fstab
 username="mazentech"
 answer="yes"
 
-cat <<EOC >/mnt/chrootcmds
-#!/usr/bin/bash
+# cat <<EOC >/mnt/chrootcmds
 
-set -euo pipefail
+install_func() {
+  set -euo pipefail
 
-xbps-install -Su
-xbps-install -u xbps
+  xbps-install -Su
+  xbps-install -u xbps
 
-sed -i 's/^#FONT="lat9w-16"/FONT="ter-132n"/' /etc/rc.conf
+  sed -i 's/^#FONT="lat9w-16"/FONT="ter-132n"/' /etc/rc.conf
 
-ln -sf /usr/share/zoneinfo/Asia/Qatar /etc/localtime
+  ln -sf /usr/share/zoneinfo/Asia/Qatar /etc/localtime
 
-sed -i 's/^#en_US.UTF-8/en_US.UTF-8/' /etc/default/libc-locales
-xbps-reconfigure -f glibc-locales
+  sed -i 's/^#en_US.UTF-8/en_US.UTF-8/' /etc/default/libc-locales
+  xbps-reconfigure -f glibc-locales
 
-echo "voidlinux" >/etc/hostname
+  echo "voidlinux" >/etc/hostname
 
-cat <<EOF >/etc/hosts
+  cat <<EOF >/etc/hosts
 #
 # /etc/hosts: static lookup table for host names
 #
@@ -83,49 +83,52 @@ cat <<EOF >/etc/hosts
 127.0.1.1        voidlinux.localdomain voidlinux
 EOF
 
-echo "Enter the root password"
-passwd
+  echo "Enter the root password"
+  passwd
 
-useradd "$username"
+  useradd "$username"
 
-echo "Enter the password of $username:"
-passwd "$username"
+  echo "Enter the password of $username:"
+  passwd "$username"
 
-echo "Do you want $username to be a sudo capable user? [Y/n]"
-read -r answer
+  echo "Do you want $username to be a sudo capable user? [Y/n]"
+  read -r answer
 
-case "$answer" in
-"n" | "N" | "no" | "No" | "NO") usermod -aG storage,video,audio "$username" ;;
-*) usermod -aG wheel,storage,video,audio "$username" ;;
-esac
+  case "$answer" in
+  "n" | "N" | "no" | "No" | "NO") usermod -aG storage,video,audio "$username" ;;
+  *) usermod -aG wheel,storage,video,audio "$username" ;;
+  esac
 
-chsh -s /bin/bash root
+  chsh -s /bin/bash root
 
-# Add sudo rights
-sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
-sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
+  # Add sudo rights
+  sed -i 's/^# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
+  sed -i 's/^# %wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 
-xbps-install -S
-xbps-install void-repo-nonfree
-echo repository=https://raw.githubusercontent.com/Makrennel/hyprland-void/repository-aarch64-glibc | tee /etc/xbps.d/hyprland-void.conf
-xbps-install -S
+  xbps-install -S
+  xbps-install void-repo-nonfree
+  echo repository=https://raw.githubusercontent.com/Makrennel/hyprland-void/repository-aarch64-glibc | tee /etc/xbps.d/hyprland-void.conf
+  xbps-install -S
 
-xbps-install -S grub-arm64-efi
+  xbps-install -S grub-arm64-efi
 
-grub-install --target=arm64-efi --efi-directory=/efi --bootloader-id="Void"
+  grub-install --target=arm64-efi --efi-directory=/efi --bootloader-id="Void"
 
-xbps-install NetworkManager elogind chrony openssh terminus-font fastfetch curl tar python
-ln -s /etc/sv/dbus /etc/runit/runsvdir/default/
-ln -s /etc/sv/NetworkManager /etc/runit/runsvdir/default/
-ln -s /etc/sv/sshd /etc/runit/runsvdir/default/
-ln -s /etc/sv/chrony /etc/runit/runsvdir/default/
+  xbps-install NetworkManager elogind chrony openssh terminus-font fastfetch curl tar python
+  ln -s /etc/sv/dbus /etc/runit/runsvdir/default/
+  ln -s /etc/sv/NetworkManager /etc/runit/runsvdir/default/
+  ln -s /etc/sv/sshd /etc/runit/runsvdir/default/
+  ln -s /etc/sv/chrony /etc/runit/runsvdir/default/
 
-xbps-reconfigure -fa
-EOC
+  xbps-reconfigure -fa
+}
+# EOC
 
-chmod 0755 /mnt/chrootcmds
+# chmod 0755 /mnt/chrootcmds
 
-xchroot /mnt /chrootcmds
+export -f install_func
+
+xchroot /mnt /bin/bash -c "install_func"
 
 if mountpoint -q /mnt; then
   umount -AR /mnt
