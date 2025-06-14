@@ -59,6 +59,7 @@ export answer="yes"
 
 # cat <<EOC >/mnt/chrootcmds
 
+xchroot /mnt /bin/bash <<END
 xbps-install -Syu
 xbps-install -yu xbps
 
@@ -122,13 +123,13 @@ ln -s /etc/sv/sshd /etc/runit/runsvdir/default/
 ln -s /etc/sv/chrony /etc/runit/runsvdir/default/
 
 xbps-reconfigure -fa
-# EOC
+END
 
 # chmod 0755 /mnt/chrootcmds
 
-export -f install_func
+# export -f install_func
 
-xchroot /mnt /bin/bash
+# xchroot /mnt /bin/bash
 
 if mountpoint -q /mnt; then
   umount -AR /mnt
