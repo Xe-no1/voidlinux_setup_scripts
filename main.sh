@@ -54,9 +54,6 @@ set -euo pipefail
 
 ###############################
 
-export username="mazentech"
-export answer="yes"
-
 # cat <<EOC >/mnt/chrootcmds
 
 xchroot /mnt /bin/bash <<END
@@ -84,17 +81,15 @@ EOF
 echo "Enter the root password"
 (passwd </dev/tty)
 
-# passwd
-
+(read -pr "Enter the username of choice" username </dev/tty)
 useradd "$username"
 
 echo "Enter the password of $username:"
 (passwd "$username" </dev/tty)
 
-# passwd "$username"
+passwd "$username"
 
-# echo "Do you want $username to be a sudo capable user? [Y/n]"
-# read -r answer
+(read -rp "Do you want $username to be a sudo capable user? [Y/n]" answer </dev/tty)
 
 case "$answer" in
 "n" | "N" | "no" | "No" | "NO") usermod -aG storage,video,audio "$username" ;;
